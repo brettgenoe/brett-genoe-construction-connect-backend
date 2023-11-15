@@ -28,7 +28,7 @@ const getUserById = async (req, res) => {
 };
 
 const createUser = async (req, res) => {
-    const { username, password, email, address, city, province, trade } = req.body;
+    const { username, password, email, address, city, province, trade, role } = req.body;
 
     try {
         const newUser = await knex('users').insert({
@@ -39,6 +39,7 @@ const createUser = async (req, res) => {
             city,
             province,
             trade,
+            role,
         });
 
         res.json({ user_id: newUser[0] });

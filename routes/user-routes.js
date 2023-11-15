@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const controller = require('../controllers/userscontroller')
+const controller = require('../controllers/usersController')
 
 router
     .route('/')
@@ -9,9 +9,6 @@ router
 router
     .route('/:id')
     .get(controller.getUserById)
-
-
-
 
 
 module.exports = router;

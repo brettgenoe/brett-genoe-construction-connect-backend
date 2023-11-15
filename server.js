@@ -12,6 +12,8 @@ app.use(cors({ origin: process.env.FRONTEND_URL || "http://localhost:3000" }));
 const userRouter = require("./routes/user-routes.js");
 app.use("/api/users", userRouter);
 
+const projectRouter = require("./routes/project-routes.js");
+app.use("/api/projects", projectRouter);
 
 
 app.listen(PORT, () => {
