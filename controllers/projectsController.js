@@ -27,20 +27,52 @@ const getProjectById = async (req, res) => {
 };
 
 const createProject = async (req, res) => {
-    const { company_name, location, duration, description, carpenters_needed, electricians_needed, plumbers_needed, operators_needed, safety_needed } = req.body;
+    const {
+        company_name,
+        duration,
+        description,
+        carpenters_needed,
+        carpenters_description,
+        electricians_needed,
+        electricians_description,
+        plumbers_needed,
+        plumbers_description,
+        operators_needed,
+        operators_description,
+        safety_needed,
+        safety_description,
+        labours_needed,
+        labours_description,
+        email,
+        telephone,
+        long,
+        lat
+    } = req.body;
 
     try {
         const newProject = await knex('projects').insert({
             company_name,
-            location,
             duration,
             description,
-            manager_id: req.users.user_id,
+            manager_id: req.user_id,
             carpenters_needed,
+            carpenters_description,
             electricians_needed,
+            electricians_description,
             plumbers_needed,
+            plumbers_description,
             operators_needed,
+            operators_description,
+            labours_needed,
+            labours_description,
             safety_needed,
+            safety_description,
+            email,
+            telephone,
+            geo_data: {
+                type: "Point",
+                coordinates: [long, lat]
+            }
         });
 
         res.json({ project_id: newProject[0] });
