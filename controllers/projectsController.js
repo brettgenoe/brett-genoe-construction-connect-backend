@@ -22,7 +22,7 @@ const getProjectById = async (req, res) => {
         }
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.status(500).json({ error: 'Internal Server Error from backside' });
     }
 };
 
@@ -45,8 +45,9 @@ const createProject = async (req, res) => {
         labours_description,
         email,
         telephone,
-        long,
-        lat
+        // geo_data: {
+        //     coordinates: [0, 0]
+        // }
     } = req.body;
 
     try {
@@ -71,14 +72,14 @@ const createProject = async (req, res) => {
             telephone,
             geo_data: {
                 type: "Point",
-                coordinates: [long, lat]
+                coordinates: [0, 0]
             }
         });
 
         res.json({ project_id: newProject[0] });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.status(500).json({ error: 'Internal Server Error from backside' });
     }
 };
 
