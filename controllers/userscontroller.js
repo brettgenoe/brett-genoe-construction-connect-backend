@@ -95,29 +95,29 @@ const loginUser = async (req, res) => {
 };
 
 const getCurrentUserInfo = async (req, res) => {
-    // If there is no auth header provided
     if (!req.headers.authorization) {
+        console.log("No authorization header");
         return res.status(401).send("Please login");
     }
 
-    // Parse the bearer token
     const authHeader = req.headers.authorization;
     const authToken = authHeader.split(" ")[1];
 
-    // Verify the token
     try {
         const decoded = jwt.verify(authToken, process.env.JWT_KEY);
 
-        // Respond with the appropriate user data
         const user = await knex('users').where('email', decoded.email).first();
 
         if (!user) {
+            console.log("User not found");
             return res.status(401).send("Invalid auth token");
         }
 
         delete user.password;
+        console.log("Sending user info:", user);
         res.json(user);
     } catch (error) {
+        console.error("Error verifying token:", error);
         return res.status(401).send("Invalid auth token");
     }
 };
