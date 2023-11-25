@@ -76,7 +76,7 @@ const loginUser = async (req, res) => {
         if (!user || !bcrypt.compareSync(password, user.password)) {
             console.log('Password Comparison Result:', bcrypt.compareSync(password, user.password));
 
-            return res.status(401).json({ error: "Invalid email or password line 79" });
+            return res.status(401).json({ error: "Invalid email or password line 79 user controller" });
         }
 
         const token = jwt.sign(
@@ -91,6 +91,26 @@ const loginUser = async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'The error is coming from ~line 76 in users controllers' });
+    }
+};
+const verifyToken = async (req, res, next) => {
+    if (!req.headers.authorization) {
+        console.log("No authorization header");
+        return res.status(401).send("Please login line 99 of controllers");
+    }
+
+    const authHeader = req.headers.authorization;
+    const authToken = authHeader.split(" ")[1];
+
+    try {
+        const decoded = jwt.verify(authToken, process.env.JWT_KEY);
+
+        req.user = decoded;
+
+        next();
+    } catch (error) {
+        console.error("Error verifying token:", error);
+        return res.status(401).send("Invalid auth token");
     }
 };
 
@@ -128,5 +148,6 @@ module.exports = {
     loginUser,
     getCurrentUserInfo,
     getAllUsers,
+    verifyToken
 };
 

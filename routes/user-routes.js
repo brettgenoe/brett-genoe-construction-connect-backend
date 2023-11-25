@@ -1,20 +1,12 @@
 const router = require('express').Router();
 const controller = require('../controllers/usersController')
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 
-// router
-//     .route('/')
-//     .get(controller.fetchAllUsers)
-//     .post(controller.createUser)
+const { verifyToken } = require('../controllers/usersController');
 
-// router
-//     .route('/:id')
-//     .get(controller.getUserById)
 router.get("/register", controller.getAllUsers)
 router.post("/register", controller.registerUser);
 router.post("/login", controller.loginUser);
-router.get("/current", controller.getCurrentUserInfo);
+router.get("/current", verifyToken, controller.getCurrentUserInfo);
 
 
 module.exports = router;
