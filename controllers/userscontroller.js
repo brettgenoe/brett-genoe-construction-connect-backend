@@ -76,7 +76,7 @@ const loginUser = async (req, res) => {
         if (!user || !bcrypt.compareSync(password, user.password)) {
             console.log('Password Comparison Result:', bcrypt.compareSync(password, user.password));
 
-            return res.status(401).json({ error: "Invalid email or password line 79" });
+            return res.status(401).json({ error: "Invalid email or password line 79 user controller" });
         }
 
         const token = jwt.sign(
@@ -93,31 +93,51 @@ const loginUser = async (req, res) => {
         res.status(500).json({ error: 'The error is coming from ~line 76 in users controllers' });
     }
 };
-
-const getCurrentUserInfo = async (req, res) => {
-    // If there is no auth header provided
+const verifyToken = async (req, res, next) => {
     if (!req.headers.authorization) {
-        return res.status(401).send("Please login");
+        console.log("No authorization header");
+        return res.status(401).send("Please login line 99 of controllers");
     }
 
-    // Parse the bearer token
     const authHeader = req.headers.authorization;
     const authToken = authHeader.split(" ")[1];
 
-    // Verify the token
     try {
         const decoded = jwt.verify(authToken, process.env.JWT_KEY);
 
-        // Respond with the appropriate user data
+        req.user = decoded;
+
+        next();
+    } catch (error) {
+        console.error("Error verifying token:", error);
+        return res.status(401).send("Invalid auth token");
+    }
+};
+
+const getCurrentUserInfo = async (req, res) => {
+    if (!req.headers.authorization) {
+        console.log("No authorization header");
+        return res.status(401).send("Please login");
+    }
+
+    const authHeader = req.headers.authorization;
+    const authToken = authHeader.split(" ")[1];
+
+    try {
+        const decoded = jwt.verify(authToken, process.env.JWT_KEY);
+
         const user = await knex('users').where('email', decoded.email).first();
 
         if (!user) {
+            console.log("User not found");
             return res.status(401).send("Invalid auth token");
         }
 
         delete user.password;
+        console.log("Sending user info:", user);
         res.json(user);
     } catch (error) {
+        console.error("Error verifying token:", error);
         return res.status(401).send("Invalid auth token");
     }
 };
@@ -128,5 +148,6 @@ module.exports = {
     loginUser,
     getCurrentUserInfo,
     getAllUsers,
+    verifyToken
 };
 

@@ -31,6 +31,7 @@ const createProject = async (req, res) => {
         company_name,
         duration,
         description,
+        manager_id,
         carpenters_needed,
         carpenters_description,
         electricians_needed,
@@ -45,9 +46,9 @@ const createProject = async (req, res) => {
         labours_description,
         email,
         telephone,
-        // geo_data: {
-        //     coordinates: [0, 0]
-        // }
+        geo_data: {
+            coordinates: [long, lat]
+        }
     } = req.body;
 
     try {
@@ -55,7 +56,7 @@ const createProject = async (req, res) => {
             company_name,
             duration,
             description,
-            manager_id: req.user_id,
+            manager_id,
             carpenters_needed,
             carpenters_description,
             electricians_needed,
@@ -72,7 +73,7 @@ const createProject = async (req, res) => {
             telephone,
             geo_data: {
                 type: "Point",
-                coordinates: [0, 0]
+                coordinates: [long, lat]
             }
         });
 
