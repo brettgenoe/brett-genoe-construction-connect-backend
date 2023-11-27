@@ -18,17 +18,13 @@ const createUser = async (req, res) => {
 
     try {
         const hashedPassword = bcrypt.hashSync(password);
-
         const newUser = await knex('users').insert({
             first_name,
             last_name,
-            // password,
             password: hashedPassword,
             email,
             role,
         });
-        console.log(newUser)
-
         res.json({ user_id: newUser[0] });
     } catch (error) {
         console.error(error);
@@ -53,8 +49,6 @@ const registerUser = async (req, res) => {
             email,
             role,
         });
-        console.log(req.body)
-
         res.status(201).json({ user_id: newUser[0] });
     } catch (error) {
         console.error(error);
@@ -71,11 +65,7 @@ const loginUser = async (req, res) => {
     try {
         const user = await knex('users').where('email', email).first();
 
-        console.log('User:', user);
-
         if (!user || !bcrypt.compareSync(password, user.password)) {
-            console.log('Password Comparison Result:', bcrypt.compareSync(password, user.password));
-
             return res.status(401).json({ error: "Invalid email or password line 79 user controller" });
         }
 
@@ -84,9 +74,6 @@ const loginUser = async (req, res) => {
             process.env.JWT_KEY,
             { expiresIn: "24h" }
         );
-
-        console.log('Generated Token:', token);
-
         res.json({ token });
     } catch (error) {
         console.error(error);
@@ -95,7 +82,6 @@ const loginUser = async (req, res) => {
 };
 const verifyToken = async (req, res, next) => {
     if (!req.headers.authorization) {
-        console.log("No authorization header");
         return res.status(401).send("Please login line 99 of controllers");
     }
 
@@ -104,7 +90,6 @@ const verifyToken = async (req, res, next) => {
 
     try {
         const decoded = jwt.verify(authToken, process.env.JWT_KEY);
-
         req.user = decoded;
 
         next();
@@ -116,7 +101,6 @@ const verifyToken = async (req, res, next) => {
 
 const getCurrentUserInfo = async (req, res) => {
     if (!req.headers.authorization) {
-        console.log("No authorization header");
         return res.status(401).send("Please login");
     }
 
@@ -125,16 +109,12 @@ const getCurrentUserInfo = async (req, res) => {
 
     try {
         const decoded = jwt.verify(authToken, process.env.JWT_KEY);
-
         const user = await knex('users').where('email', decoded.email).first();
 
         if (!user) {
-            console.log("User not found");
             return res.status(401).send("Invalid auth token");
         }
-
         delete user.password;
-        console.log("Sending user info:", user);
         res.json(user);
     } catch (error) {
         console.error("Error verifying token:", error);
