@@ -20,7 +20,7 @@ CREATE DATABASE constructionconnect;
 
 npm run migrate
 
-<h3>Seed the tables with dummy data</h3>
+<h3>Seed the tables with sample data</h3>
 
 npm run seed
 
